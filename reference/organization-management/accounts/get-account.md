@@ -6,4 +6,4 @@ api:
 deprecated: false
 hidden: true
 ---
-Retrieve details for a specific merchant account.
+Get a specific account by UUID.

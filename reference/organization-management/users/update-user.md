@@ -6,4 +6,4 @@ api:
 deprecated: false
 hidden: true
 ---
-Update the personal information (name, etc.) of an existing user.
+Updates a user's name.

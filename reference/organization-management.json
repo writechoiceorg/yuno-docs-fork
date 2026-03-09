@@ -21,6 +21,11 @@
         "type": "apiKey",
         "in": "header",
         "name": "PRIVATE-SECRET-KEY"
+      },
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     },
     "schemas": {
@@ -29,21 +34,26 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "example": "Acme Payments"
           },
           "merchant_id": {
-            "type": "string"
+            "type": "string",
+            "example": "fintech"
           },
           "created_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2026-03-05T08:00:00.000Z"
           },
           "updated_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2026-03-05T08:00:00.000Z"
           }
         }
       },
@@ -52,22 +62,27 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "example": "a1b2c3d4-5678-4abc-9def-0123456789ab"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "example": "Acme Production"
           },
           "account_group_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           },
           "created_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2026-03-05T08:05:00.000Z"
           },
           "updated_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2026-03-05T08:05:00.000Z"
           }
         }
       },
@@ -76,56 +91,111 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "example": "c3d4e5f6-7890-4abc-def0-123456789abc"
           },
           "email": {
             "type": "string",
-            "format": "email"
+            "format": "email",
+            "example": "john.doe@acmepay.com"
           },
           "first_name": {
-            "type": "string"
+            "type": "string",
+            "example": "John"
           },
           "last_name": {
-            "type": "string"
+            "type": "string",
+            "example": "Doe"
           },
           "account_permissions": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "account_id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "role_id": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/components/schemas/AccountPermission"
             }
           },
           "account_group_permissions": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "account_group_id": {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                "role_id": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/components/schemas/AccountGroupPermission"
             }
           },
           "created_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2026-03-05T08:10:00.000Z"
           },
           "updated_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "example": "2026-03-05T08:10:00.000Z"
           }
+        }
+      },
+      "AccountPermission": {
+        "type": "object",
+        "required": [
+          "account_id",
+          "role_id"
+        ],
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1b2c3d4-..."
+          },
+          "account_name": {
+            "type": "string",
+            "example": "Acme Production"
+          },
+          "role_id": {
+            "type": "string",
+            "example": "merchant-operator"
+          },
+          "role_name": {
+            "type": "string",
+            "example": "Operator"
+          }
+        }
+      },
+      "AccountGroupPermission": {
+        "type": "object",
+        "required": [
+          "account_group_id",
+          "role_id"
+        ],
+        "properties": {
+          "account_group_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f47ac10b-..."
+          },
+          "account_group_name": {
+            "type": "string",
+            "example": "Acme Payments"
+          },
+          "role_id": {
+            "type": "string",
+            "example": "merchant-viewer"
+          },
+          "role_name": {
+            "type": "string",
+            "example": "Viewer"
+          },
+          "accounts_count": {
+            "type": "integer",
+            "example": 5
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "integer", "example": 1 },
+          "page_size": { "type": "integer", "example": 20 },
+          "total_items": { "type": "integer", "example": 142 },
+          "total_pages": { "type": "integer", "example": 8 },
+          "has_next": { "type": "boolean", "example": true },
+          "has_previous": { "type": "boolean", "example": false }
         }
       }
     }
@@ -137,6 +207,50 @@
     }
   ],
   "paths": {
+    "/organizations/authenticate": {
+      "post": {
+        "summary": "Authenticate User",
+        "operationId": "authenticate-user",
+        "tags": ["Authentication"],
+        "description": "Authenticates a whitelabel user and returns a JWT embed token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["user_code"],
+                "properties": {
+                  "user_code": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "UUID of the whitelabel user",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIs..." },
+                    "token_type": { "type": "string", "example": "Bearer" },
+                    "expires_in": { "type": "integer", "example": 86400 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/organizations/account-groups": {
       "post": {
         "summary": "Create Account Group",
@@ -158,12 +272,14 @@
                   "name": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 255
+                    "maxLength": 255,
+                    "example": "Acme Payments"
                   },
                   "merchant_id": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 255
+                    "maxLength": 255,
+                    "example": "fintech"
                   }
                 }
               }
@@ -204,7 +320,7 @@
                       }
                     },
                     "pagination": {
-                      "type": "object"
+                      "$ref": "#/components/schemas/Pagination"
                     }
                   }
                 }
@@ -228,7 +344,8 @@
             "required": true,
             "schema": {
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
             }
           }
         ],
@@ -269,10 +386,12 @@
                 "type": "object",
                 "properties": {
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "e-commerce"
                   },
                   "merchant_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Medellín"
                   }
                 }
               }
@@ -326,7 +445,7 @@
                       }
                     },
                     "pagination": {
-                      "type": "object"
+                      "$ref": "#/components/schemas/Pagination"
                     }
                   }
                 }
@@ -365,7 +484,8 @@
                   "name": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 255
+                    "maxLength": 255,
+                    "example": "Acme Production"
                   }
                 }
               }
@@ -408,7 +528,7 @@
                       }
                     },
                     "pagination": {
-                      "type": "object"
+                      "$ref": "#/components/schemas/Pagination"
                     }
                   }
                 }
@@ -473,7 +593,8 @@
                 "type": "object",
                 "properties": {
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Acme Staging"
                   }
                 }
               }
@@ -519,7 +640,8 @@
                   "type": "object",
                   "properties": {
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Account disabled successfully"
                     }
                   }
                 }
@@ -530,11 +652,135 @@
       }
     },
     "/organizations/users": {
-      "post": {
-        "summary": "Create User",
-        "operationId": "create-user",
+        "post": {
+            "summary": "Create User",
+            "operationId": "create-user",
+            "tags": ["Users"],
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "required": ["email", "first_name", "last_name"],
+                            "properties": {
+                                "email": { "type": "string", "format": "email", "example": "john.doe@acmepay.com" },
+                                "first_name": { "type": "string", "example": "John" },
+                                "last_name": { "type": "string", "example": "Doe" },
+                                "account_permissions": {
+                                    "type": "array",
+                                    "items": { "type": "object", "properties": { "account_id": { "type": "string", "format": "uuid", "example": "a1b2c3d4-..." }, "role_id": { "type": "string", "example": "merchant-operator" } } }
+                                },
+                                "account_group_permissions": {
+                                    "type": "array",
+                                    "items": { "type": "object", "properties": { "account_group_id": { "type": "string", "format": "uuid", "example": "f47ac10b-..." }, "role_id": { "type": "string", "example": "merchant-viewer" } } }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "201": {
+                    "description": "Created",
+                    "content": {
+                        "application/json": { "schema": { "$ref": "#/components/schemas/User" } }
+                    }
+                }
+            }
+        },
+        "get": {
+            "summary": "List Users",
+            "operationId": "list-users",
+            "tags": ["Users"],
+            "parameters": [
+                { "name": "account_group_id", "in": "query", "schema": { "type": "string", "format": "uuid" } },
+                { "name": "account_id", "in": "query", "schema": { "type": "string", "format": "uuid" } },
+                { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+                { "name": "page_size", "in": "query", "schema": { "type": "integer", "default": 20, "maximum": 100 } }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/User" } },
+                                    "pagination": { "$ref": "#/components/schemas/Pagination" }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/organizations/users/{user_id}": {
+        "get": {
+            "summary": "Get User",
+            "operationId": "get-user",
+            "tags": ["Users"],
+            "parameters": [
+                { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": { "schema": { "$ref": "#/components/schemas/User" } }
+                    }
+                }
+            }
+        },
+        "patch": {
+            "summary": "Update User",
+            "operationId": "update-user",
+            "tags": ["Users"],
+            "parameters": [
+                { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": { "first_name": { "type": "string", "example": "Jonathan" }, "last_name": { "type": "string", "example": "Doe" } }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": { "schema": { "$ref": "#/components/schemas/User" } }
+                    }
+                }
+            }
+        },
+        "delete": {
+            "summary": "Delete User",
+            "operationId": "delete-user",
+            "tags": ["Users"],
+            "parameters": [
+                { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+            ],
+            "responses": {
+                "204": { "description": "No Content" }
+            }
+        }
+    },
+    "/organizations/users/{user_id}/account-permissions": {
+      "put": {
+        "summary": "Replace Account Permissions",
+        "operationId": "replace-account-permissions",
         "tags": [
-          "Users"
+          "User Permissions"
+        ],
+        "parameters": [
+          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
         "requestBody": {
           "required": true,
@@ -542,59 +788,11 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "email",
-                  "first_name",
-                  "last_name"
-                ],
+                "required": [ "account_permissions" ],
                 "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email"
-                  },
-                  "first_name": {
-                    "type": "string"
-                  },
-                  "last_name": {
-                    "type": "string"
-                  },
                   "account_permissions": {
                     "type": "array",
-                    "items": {
-                      "type": "object",
-                      "required": [
-                        "account_id",
-                        "role_id"
-                      ],
-                      "properties": {
-                        "account_id": {
-                          "type": "string",
-                          "format": "uuid"
-                        },
-                        "role_id": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  },
-                  "account_group_permissions": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "required": [
-                        "account_group_id",
-                        "role_id"
-                      ],
-                      "properties": {
-                        "account_group_id": {
-                          "type": "string",
-                          "format": "uuid"
-                        },
-                        "role_id": {
-                          "type": "string"
-                        }
-                      }
-                    }
+                    "items": { "type": "object", "required": [ "account_id", "role_id" ], "properties": { "account_id": { "type": "string", "format": "uuid", "example": "a1b2c3d4-..." }, "role_id": { "type": "string", "example": "merchant-operator" } } }
                   }
                 }
               }
@@ -602,12 +800,17 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "Created",
+          "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "type": "object",
+                  "properties": {
+                    "user_id": { "type": "string", "format": "uuid", "example": "c3d4e5f6-7890-4abc-def0-123456789abc" },
+                    "account_permissions": { "type": "array", "items": { "$ref": "#/components/schemas/AccountPermission" } },
+                    "updated_at": { "type": "string", "format": "date-time", "example": "2026-03-05T12:00:00.000Z" }
+                  }
                 }
               }
             }
@@ -615,45 +818,13 @@
         }
       },
       "get": {
-        "summary": "List Users",
-        "operationId": "list-users",
+        "summary": "List Account Permissions",
+        "operationId": "list-account-permissions",
         "tags": [
-          "Users"
+          "User Permissions"
         ],
         "parameters": [
-          {
-            "name": "account_group_id",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "account_id",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 1
-            }
-          },
-          {
-            "name": "page_size",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 20,
-              "maximum": 100
-            }
-          }
+          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
         "responses": {
           "200": {
@@ -663,222 +834,23 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/User"
-                      }
-                    },
-                    "pagination": {
-                      "type": "object"
-                    }
+                    "user_id": { "type": "string", "format": "uuid", "example": "c3d4e5f6-7890-4abc-def0-123456789abc" },
+                    "account_permissions": { "type": "array", "items": { "$ref": "#/components/schemas/AccountPermission" } }
                   }
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/organizations/users/{user_id}": {
-      "get": {
-        "summary": "Get User",
-        "operationId": "get-user",
-        "tags": [
-          "Users"
-        ],
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update User",
-        "operationId": "update-user",
-        "tags": [
-          "Users"
-        ],
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "first_name": {
-                    "type": "string"
-                  },
-                  "last_name": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete User",
-        "operationId": "delete-user",
-        "tags": [
-          "Users"
-        ],
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        }
-      }
-    },
-    "/organizations/users/{user_id}/account-permissions": {
-      "put": {
-        "summary": "Replace Account Permissions",
-        "operationId": "put-v1-organizations-users-user_id-account-permissions",
-        "tags": [
-          "User Permissions"
-        ],
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "account_permissions"
-                ],
-                "properties": {
-                  "account_permissions": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "required": [
-                        "account_id",
-                        "role_id"
-                      ],
-                      "properties": {
-                        "account_id": {
-                          "type": "string",
-                          "format": "uuid"
-                        },
-                        "role_id": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "get": {
-        "summary": "List Account Permissions",
-        "operationId": "get-v1-organizations-users-user_id-account-permissions",
-        "tags": [
-          "User Permissions"
-        ],
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
           }
         }
       },
       "patch": {
         "summary": "Update Account Permissions",
-        "operationId": "patch-v1-organizations-users-user_id-account-permissions",
+        "operationId": "update-account-permissions",
         "tags": [
           "User Permissions"
         ],
         "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
+          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
         "requestBody": {
           "required": true,
@@ -886,15 +858,11 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "account_permissions"
-                ],
+                "required": [ "account_permissions" ],
                 "properties": {
                   "account_permissions": {
                     "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/AccountPermission"
-                    }
+                    "items": { "type": "object", "required": [ "account_id", "role_id" ], "properties": { "account_id": { "type": "string", "format": "uuid", "example": "d4e5f6a7-..." }, "role_id": { "type": "string", "example": "merchant-viewer" } } }
                   }
                 }
               }
@@ -903,7 +871,18 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user_id": { "type": "string", "format": "uuid", "example": "c3d4e5f6-7890-4abc-def0-123456789abc" },
+                    "account_permissions": { "type": "array", "items": { "$ref": "#/components/schemas/AccountPermission" } }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -911,54 +890,28 @@
     "/organizations/users/{user_id}/account-permissions/{account_id}": {
       "delete": {
         "summary": "Remove Account Permission",
-        "operationId": "delete-v1-organizations-users-user_id-account-permissions-account_id",
+        "operationId": "remove-account-permission",
         "tags": [
           "User Permissions"
         ],
         "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "account_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
+          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } },
+          { "name": "account_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
-          }
+          "204": { "description": "No Content" }
         }
       }
     },
     "/organizations/users/{user_id}/account-group-permissions": {
       "put": {
         "summary": "Replace Account Group Permissions",
-        "operationId": "put-v1-organizations-users-user_id-account-group-permissions",
+        "operationId": "replace-account-group-permissions",
         "tags": [
           "User Permissions"
         ],
         "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
+          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
         "requestBody": {
           "required": true,
@@ -966,28 +919,11 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "account_group_permissions"
-                ],
+                "required": [ "account_group_permissions" ],
                 "properties": {
                   "account_group_permissions": {
                     "type": "array",
-                    "items": {
-                      "type": "object",
-                      "required": [
-                        "account_group_id",
-                        "role_id"
-                      ],
-                      "properties": {
-                        "account_group_id": {
-                          "type": "string",
-                          "format": "uuid"
-                        },
-                        "role_id": {
-                          "type": "string"
-                        }
-                      }
-                    }
+                    "items": { "type": "object", "required": [ "account_group_id", "role_id" ], "properties": { "account_group_id": { "type": "string", "format": "uuid", "example": "f47ac10b-..." }, "role_id": { "type": "string", "example": "merchant-viewer" } } }
                   }
                 }
               }
@@ -996,49 +932,56 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user_id": { "type": "string", "format": "uuid", "example": "c3d4e5f6-7890-4abc-def0-123456789abc" },
+                    "account_group_permissions": { "type": "array", "items": { "$ref": "#/components/schemas/AccountGroupPermission" } },
+                    "updated_at": { "type": "string", "format": "date-time", "example": "2026-03-05T14:00:00.000Z" }
+                  }
+                }
+              }
+            }
           }
         }
       },
       "get": {
         "summary": "List Account Group Permissions",
-        "operationId": "get-v1-organizations-users-user_id-account-group-permissions",
+        "operationId": "list-account-group-permissions",
         "tags": [
           "User Permissions"
         ],
         "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
+          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user_id": { "type": "string", "format": "uuid", "example": "c3d4e5f6-7890-4abc-def0-123456789abc" },
+                    "account_group_permissions": { "type": "array", "items": { "$ref": "#/components/schemas/AccountGroupPermission" } }
+                  }
+                }
+              }
+            }
           }
         }
       },
       "patch": {
         "summary": "Update Account Group Permissions",
-        "operationId": "patch-v1-organizations-users-user_id-account-group-permissions",
+        "operationId": "update-account-group-permissions",
         "tags": [
           "User Permissions"
         ],
         "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
+          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
         "requestBody": {
           "required": true,
@@ -1046,28 +989,11 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "account_group_permissions"
-                ],
+                "required": [ "account_group_permissions" ],
                 "properties": {
                   "account_group_permissions": {
                     "type": "array",
-                    "items": {
-                      "type": "object",
-                      "required": [
-                        "account_group_id",
-                        "role_id"
-                      ],
-                      "properties": {
-                        "account_group_id": {
-                          "type": "string",
-                          "format": "uuid"
-                        },
-                        "role_id": {
-                          "type": "string"
-                        }
-                      }
-                    }
+                    "items": { "type": "object", "required": [ "account_group_id", "role_id" ], "properties": { "account_group_id": { "type": "string", "format": "uuid", "example": "f47ac10b-..." }, "role_id": { "type": "string", "example": "merchant-operator" } } }
                   }
                 }
               }
@@ -1076,7 +1002,18 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user_id": { "type": "string", "format": "uuid", "example": "c3d4e5f6-7890-4abc-def0-123456789abc" },
+                    "account_group_permissions": { "type": "array", "items": { "$ref": "#/components/schemas/AccountGroupPermission" } }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1084,34 +1021,16 @@
     "/organizations/users/{user_id}/account-group-permissions/{account_group_id}": {
       "delete": {
         "summary": "Remove Account Group Permission",
-        "operationId": "delete-v1-organizations-users-user_id-account-group-permissions-account_group_id",
+        "operationId": "remove-account-group-permission",
         "tags": [
           "User Permissions"
         ],
         "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "account_group_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
+          { "name": "user_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } },
+          { "name": "account_group_id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
-          }
+          "204": { "description": "No Content" }
         }
       }
     }

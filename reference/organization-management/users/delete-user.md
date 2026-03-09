@@ -6,4 +6,4 @@ api:
 deprecated: false
 hidden: true
 ---
-Partially or completely remove a user from your organization.
+Deletes a user and its associated records (org links, account links, roles).

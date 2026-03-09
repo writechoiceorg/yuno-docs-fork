@@ -6,4 +6,4 @@ api:
 deprecated: false
 hidden: true
 ---
-Update the details of an existing merchant account.
+Updates an account's name.

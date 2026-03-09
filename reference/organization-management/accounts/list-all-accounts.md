@@ -6,4 +6,4 @@ api:
 deprecated: false
 hidden: true
 ---
-Retrieve a paginated list of all accounts across your entire organization.
+Lists all accounts for the authenticated organization.

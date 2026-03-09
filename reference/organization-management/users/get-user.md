@@ -6,4 +6,4 @@ api:
 deprecated: false
 hidden: true
 ---
-Retrieve details for a specific user.
+Get a specific user's details and permissions.

@@ -3,3 +3,11 @@
 - get-user
 - update-user
 - delete-user
+- replace-account-permissions
+- list-account-permissions
+- update-account-permissions
+- remove-account-permission
+- replace-account-group-permissions
+- list-account-group-permissions
+- update-account-group-permissions
+- remove-account-group-permission

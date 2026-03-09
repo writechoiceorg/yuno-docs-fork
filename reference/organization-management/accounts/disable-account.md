@@ -6,4 +6,7 @@ api:
 deprecated: false
 hidden: true
 ---
-Disable a specific merchant account. Note that this might be an irreversible action or require specific permissions.
+Disables an account.
+
+> ⚠️ Important
+> Disabled accounts are not deleted but are restricted from processing new transactions.

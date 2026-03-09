@@ -6,4 +6,4 @@ api:
 deprecated: false
 hidden: true
 ---
-Create a new merchant account within a specific account group.
+Creates a new account under an account group.

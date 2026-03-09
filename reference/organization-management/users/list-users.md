@@ -6,4 +6,4 @@ api:
 deprecated: false
 hidden: true
 ---
-Retrieve a list of users in your organization, with optional filtering by account group or account.
+Lists users. Optionally filter by account group or specific account.
