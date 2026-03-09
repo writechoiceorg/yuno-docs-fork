@@ -1,5 +1,5 @@
 ---
-title: API Overview
+title: Organization Management
 excerpt: Overview of the Organization Management API.
 deprecated: false
 hidden: true
