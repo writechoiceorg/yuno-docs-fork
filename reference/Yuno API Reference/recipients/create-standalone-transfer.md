@@ -1,7 +1,7 @@
 ---
 title: Create Standalone Transfer
 api:
-  file: openapi.json
+  file: split-marketplace-transfers.json
   operationId: create-standalone-transfer
 hidden: false
 ---

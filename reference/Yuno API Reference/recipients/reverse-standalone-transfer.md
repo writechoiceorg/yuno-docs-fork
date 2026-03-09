@@ -1,7 +1,7 @@
 ---
 title: Reverse Standalone Transfer
 api:
-  file: openapi.json
+  file: split-marketplace-transfers.json
   operationId: reverse-standalone-transfer
 hidden: false
 ---
