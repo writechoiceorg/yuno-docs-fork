@@ -1,8 +1,8 @@
 ---
-title: Organization Management
+title: API Overview
 excerpt: Overview of the Organization Management API.
 deprecated: false
-hidden: true
+hidden: false
 metadata:
   title: Organization Management
   description: Manage account groups, accounts, and user permissions across your organization.
