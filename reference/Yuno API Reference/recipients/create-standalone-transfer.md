@@ -1,9 +1,9 @@
 ---
 title: Create Standalone Transfer
-type: post
 api:
-  method: post
-  url: /v1/split-marketplace/transfers
+  file: openapi.json
+  operationId: create-standalone-transfer
+hidden: false
 ---
 
 Create a forward transfer to distribute funds from your organization balance to your recipients independently of a payment.

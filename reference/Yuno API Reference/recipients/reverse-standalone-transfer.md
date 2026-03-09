@@ -1,9 +1,9 @@
 ---
 title: Reverse Standalone Transfer
-type: post
 api:
-  method: post
-  url: /v1/split-marketplace/transfers/{transfer_id}/reverse
+  file: openapi.json
+  operationId: reverse-standalone-transfer
+hidden: false
 ---
 
 Reverse a specific standalone transfer. This endpoint allows you to fully or partially reverse a `SUCCEEDED` forward transfer. 
