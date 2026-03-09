@@ -1,6 +1,6 @@
 ---
 title: Organization Management
-excerpt: Overview of the Organization Management API.
+excerpt: Manage account groups, accounts, and user permissions across your organization.
 deprecated: false
 hidden: true
 metadata:
@@ -8,20 +8,26 @@ metadata:
   description: Manage account groups, accounts, and user permissions across your organization.
   robots: noindex
 ---
-# Organization Management
 
-The Organization Management API allows you to programmatically manage your B2B structure within Yuno. This includes creating and managing:
+The Organization Management API provides a robust framework for programmatically managing your B2B hierarchy within Yuno. This suite of endpoints enables you to architect and maintain complex multi-merchant structures with granular security.
 
-- **Account Groups**: Logical groupings of accounts (e.g., by region, business unit, or partner).
-- **Accounts**: Individual merchant accounts within a group.
-- **Users**: Staff members with specific permissions at the account or account group level.
-- **Permissions**: Granular access control for users.
+## Core Components
+
+- **Account Groups**: Top-level logical groupings used to organize accounts by region, business unit, or partner.
+- **Accounts**: Individual merchant environments, each with its own payment and checkout configurations.
+- **Users**: Staff members with identity profiles managed within your B2B organization.
+- **RBAC Permissions**: Granular access control strings that define what users can do at both the Account and Group levels.
 
 ## Authentication
-All requests require the following headers:
-- `PUBLIC-API-KEY`
-- `PRIVATE-SECRET-KEY`
+
+All requests to the Organization Management API require the following security headers:
+
+- `PUBLIC-API-KEY`: Your public identification key.
+- `PRIVATE-SECRET-KEY`: Your private secret for server-to-server authorization.
 
 ## Base URL
-All requests are made to:
-`/v1`
+
+| Environment | Base URL |
+| :--- | :--- |
+| **Sandbox** | `https://api-sandbox.y.uno/v1` |
+| **Production** | `https://api.y.uno/v1` |
