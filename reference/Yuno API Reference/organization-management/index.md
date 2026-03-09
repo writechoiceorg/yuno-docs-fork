@@ -5,7 +5,7 @@ deprecated: false
 hidden: true
 metadata:
   title: Organization Management
-  description: Manage account groups, accounts, and user permissions across your organization.
+  description: Manage account groups, accounts, and user permissions across your organization using the Yuno B2B API.
   robots: noindex
 ---
 

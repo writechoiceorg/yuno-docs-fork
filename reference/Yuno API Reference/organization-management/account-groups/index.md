@@ -4,8 +4,8 @@ excerpt: Manage top-level organizational entities and their association with mer
 deprecated: false
 hidden: true
 metadata:
-  title: ''
-  description: ''
+  title: Account Groups
+  description: Manage top-level organizational entities and their association with merchant IDs in Yuno's B2B structure.
   robots: index
 next:
   description: ''

@@ -1,12 +1,21 @@
 ---
 title: Disable Account
+excerpt: ''
 api:
   file: organization-management.json
   operationId: disable-account
 deprecated: false
 hidden: true
+metadata:
+  title: ''
+  description: >-
+    Permanently disable a merchant account to prevent further transaction processing.
+  robots: index
+next:
+  description: ''
 ---
-Disables an account.
+This request permanently disables a merchant account to prevent further transaction processing. 
 
-> ⚠️ Important
-> Disabled accounts are not deleted but are restricted from processing new transactions.
+> 🚧 Important
+>
+> Disabling an account is a terminal operation. Once disabled, the account can no longer be used to process payments.

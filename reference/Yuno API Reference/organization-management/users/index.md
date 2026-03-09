@@ -4,8 +4,8 @@ excerpt: Manage user profiles and granular role-based access control (RBAC).
 deprecated: false
 hidden: true
 metadata:
-  title: ''
-  description: ''
+  title: Users
+  description: Manage user profiles and define granular role-based access control (RBAC) across your B2B organization.
   robots: index
 ---
 User management provides control over who can access your B2B organization and what actions they can perform. Access is governed by role-based permissions assigned at both the Account and Account Group levels, allowing for precise security management.

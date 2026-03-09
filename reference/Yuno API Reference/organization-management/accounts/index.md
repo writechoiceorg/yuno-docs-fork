@@ -4,8 +4,8 @@ excerpt: Create and manage individual merchant environments within your organiza
 deprecated: false
 hidden: true
 metadata:
-  title: ''
-  description: ''
+  title: Accounts
+  description: Create and manage individual merchant environments and payment configurations within your Yuno organization.
   robots: index
 ---
 Accounts represent specific merchant environments within an Account Group. Each account has its own unique configuration for payment processing, checkout flows, and routing rules, while inheriting the organizational context from its parent group.

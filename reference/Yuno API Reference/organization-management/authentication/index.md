@@ -4,8 +4,8 @@ excerpt: Securely authenticate users for white-label integrations using Embed To
 deprecated: false
 hidden: true
 metadata:
-  title: ''
-  description: ''
+  title: Authentication
+  description: Securely authenticate whitelabel users using Yuno's Embed Token system for frontend integrations.
   robots: index
 ---
 To provide secure, authenticated access to Organization Management features within white-label dashboards or custom SDK implementations, Yuno utilizes an Embed Token system.
