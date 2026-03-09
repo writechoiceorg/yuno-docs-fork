@@ -14,7 +14,10 @@ metadata:
 next:
   description: ''
 ---
-This request permanently disables a merchant account to prevent further transaction processing. 
+This request permanently disables a merchant account to prevent further transaction processing.
+
+### Endpoint
+`DELETE /v1/organizations/accounts/{account_id}`
 
 > 🚧 Important
 >
